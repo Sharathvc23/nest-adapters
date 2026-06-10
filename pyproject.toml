@@ -1,0 +1,71 @@
+# SPDX-License-Identifier: Apache-2.0
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "nest-stellarminds"
+version = "0.1.0"
+description = "Stellarminds protocol adapters for Nanda Town (NEST): real Ed25519 rotating identity, and more."
+readme = "README.md"
+requires-python = ">=3.12"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+authors = [{ name = "Stellarminds Labs" }]
+keywords = ["nanda", "nest", "agent", "protocol", "ed25519", "identity", "key-rotation"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Security :: Cryptography",
+    "Typing :: Typed",
+]
+dependencies = [
+    "nest-core>=0.1.4",
+    "cryptography>=43.0.0",
+]
+
+[project.optional-dependencies]
+# Needed only to RUN the bundled scenarios end-to-end (supplies the other 11
+# reference layer plugins). The identity plugin alone needs none of these.
+scenarios = ["nest-plugins-reference>=0.1.1"]
+
+[project.urls]
+Homepage = "https://labs.stellarminds.ai"
+Repository = "https://github.com/Sharathvc23/nest-stellarminds"
+
+# Nanda Town discovers plugins via these entry-point groups (nest.plugins.<layer>).
+# Adding a (layer, name) here is all it takes for `nest run` to resolve our plugin.
+[project.entry-points."nest.plugins.identity"]
+sm_ed25519_rotating = "nest_stellarminds.identity:Ed25519RotatingIdentity"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.15",
+    "pyright>=1.1.400",
+    "pytest>=9.0",
+    "pytest-asyncio>=1.0",
+    "hypothesis>=6.0",
+    "pyyaml>=6.0",
+    "nest-plugins-reference>=0.1.1",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/nest_stellarminds"]
+
+[tool.ruff]
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP", "B", "A", "SIM", "TCH"]
+
+[tool.pyright]
+include = ["src", "tests"]
+typeCheckingMode = "strict"
+pythonVersion = "3.12"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]

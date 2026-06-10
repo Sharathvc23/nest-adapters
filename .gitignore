@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: Apache-2.0
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.ruff_cache/
+.hypothesis/
+traces/
+*.jsonl
+.DS_Store
