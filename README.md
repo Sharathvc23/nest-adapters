@@ -24,6 +24,8 @@ name in the YAML `layers:` block.
 | Layer | Plugin name | Class | Solves |
 |---|---|---|---|
 | identity | `sm_ed25519_rotating` | `Ed25519RotatingIdentity` | Problem 5 — real Ed25519 identity with key rotation and historical (as-of) signature verification. |
+| identity | `ed25519_didkey` | `Ed25519DidKeyIdentity` | Real Ed25519 `did:key` baseline (replaces the toy `sim-rsa-sha256` reference), backed by `sm-arp`. |
+| trust | `agent_receipts` | `AgentReceiptsTrust` | Reputation from cross-signed ARP receipts (VRP `nanda-rep/0.2`): corroboration + collusion severing, backed by `sm-arp`. |
 
 More adapters (auth delegation, content-addressed datafacts, versioned comms,
 gossip registry) are planned; see `docs/conformance.md`.
@@ -69,6 +71,69 @@ byte-identical trace, which is what Nanda Town's seed-bank check enforces.
 
 did:key values are `did:key:z<base58btc(0xed01 ‖ pubkey32)>`, byte-compatible
 with the Stellarminds `sm-arp` / chapter-protocol did:key encoding.
+
+## Identity: `ed25519_didkey`
+
+The non-rotating real-crypto baseline. NEST's reference `did_key` plugin is a
+toy (`sim-rsa-sha256`, textbook RSA); its own docstring says to "swap to a
+proper Ed25519 implementation." This is that swap, backed by `sm-arp`.
+
+Each agent's keypair derives deterministically from its `AgentId`
+(`Identity.from_seed(sha256(str(agent_id))[:32])`), and Ed25519 (RFC 8032) is
+itself deterministic, so traces replay byte-for-byte. Signatures use
+`algorithm="ed25519"` and carry the raw 64-byte Ed25519 signature (no envelope).
+`did_of(agent)` exposes the `did:key`, which is byte-identical to the receipt
+`principal_did` the trust plugin keys on.
+
+```python
+from nest_stellarminds.identity_didkey import Ed25519DidKeyIdentity
+from nest_core.types import AgentId
+
+ident = Ed25519DidKeyIdentity(AgentId("a1"))
+sig = ident.sign(b"hello")                       # algorithm="ed25519", 64-byte raw sig
+assert ident.verify(b"hello", sig, AgentId("a1"))
+did = ident.did_of(AgentId("a1"))                # did:key:z6Mk...
+```
+
+## Trust: `agent_receipts`
+
+Reputation from **cross-signed ARP receipts** instead of self-asserted feedback.
+A report carries an ARP receipt as JSON in `Evidence.detail`; the plugin
+verifies it (`sm_arp.receipts.verify_receipt`) and, if valid, appends it to an
+in-memory ledger. `score(agent)` gathers that agent's receipts (matched on
+`principal_did`) and runs `sm_arp.vrp.reputation_score_v2` (corroboration-gated,
+collusion-severing) with `corroboration_rate` as confidence.
+
+`reputation_score_v2` is **unbounded** (it sums category weights), so the raw
+score is normalized to `[0, 1]` for `ReputationScore.score` via a saturating map
+`1 - exp(-raw / K)` with **`K = 10`** (`NORMALIZATION_K`). At `K = 10` a single
+corroborated `purchase` receipt (raw = 5.0) maps to ≈ 0.39 — safely above the
+marketplace gate's 0.2 threshold — while the curve stays unsaturated for small
+ledgers (raw = 10 → 0.63, raw = 30 → 0.95).
+
+Stock scenarios pass a plain-string `detail` (no receipt); those fall back to
+the reference score-average heuristic (positive → 1.0, negative/byzantine →
+0.0), so the plugin is a drop-in replacement. The constructor is no-arg-callable
+(the runner does `trust_cls()`); the plugin mints its own deterministic Ed25519
+identity for attestations. `stake` is a parity-only no-op (`sm-arp` has no
+staking primitive).
+
+> Known boundary: per-agent `score()` reflects that agent's *own* corroborated
+> receipts. Collusion-ring severing is a property of the *global* corroboration
+> graph and is exercised at the library level (`reputation_score_v2` over a full
+> ledger) — see the `reputation_receipts` benchmark follow-up.
+
+```python
+import json
+from nest_stellarminds.trust_receipts import AgentReceiptsTrust
+from nest_core.types import AgentId, Evidence
+
+trust = AgentReceiptsTrust()
+await trust.report(AgentId("a1"), Evidence(
+    reporter=AgentId("a2"), subject=AgentId("a1"),
+    kind="receipt", detail=json.dumps(cross_signed_receipt)))
+rep = await trust.score(AgentId("a1"))           # corroborated, normalized to [0, 1]
+```
 
 ## Validators
 
