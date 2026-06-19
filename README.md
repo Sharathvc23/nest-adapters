@@ -151,4 +151,4 @@ make ci-local   # uv sync, ruff check, ruff format --check, pyright (strict), py
 
 ---
 
-<sub>Part of the NANDA project. Apache-2.0.</sub>
+<sub>Built by [labs.stellarminds.ai](https://labs.stellarminds.ai). Apache-2.0.</sub>
