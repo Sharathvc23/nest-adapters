@@ -1,11 +1,11 @@
 <!-- SPDX-License-Identifier: Apache-2.0 -->
-# nest-stellarminds
+# nest-adapters
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Python 3.12+](https://img.shields.io/badge/Python-3.12%2B-blue.svg)](https://www.python.org/downloads/)
 [![Status: Alpha](https://img.shields.io/badge/Status-Alpha-orange.svg)]()
 
-Stellarminds protocol adapters for [Nanda Town](https://github.com/projnanda/nandatown)
+NANDA protocol adapters for [Nanda Town](https://github.com/projnanda/nandatown)
 (NEST). Each adapter implements one of Nanda Town's 12 layer `Protocol`
 interfaces and is discovered by `nest run` via the `nest.plugins.<layer>`
 entry points — no fork of `nest-core` required.
@@ -13,7 +13,7 @@ entry points — no fork of `nest-core` required.
 ## Install
 
 ```bash
-pip install nest-core nest-stellarminds
+pip install nest-core nest-adapters
 ```
 
 Installing this package registers its plugins; point any scenario at them by
@@ -23,14 +23,14 @@ name in the YAML `layers:` block.
 
 | Layer | Plugin name | Class | Solves |
 |---|---|---|---|
-| identity | `sm_ed25519_rotating` | `Ed25519RotatingIdentity` | Problem 5 — real Ed25519 identity with key rotation and historical (as-of) signature verification. |
+| identity | `ed25519_rotating` | `Ed25519RotatingIdentity` | Problem 5 — real Ed25519 identity with key rotation and historical (as-of) signature verification. |
 | identity | `ed25519_didkey` | `Ed25519DidKeyIdentity` | Real Ed25519 `did:key` baseline (replaces the toy `sim-rsa-sha256` reference), backed by `sm-arp`. |
 | trust | `agent_receipts` | `AgentReceiptsTrust` | Reputation from cross-signed ARP receipts (VRP `nanda-rep/0.2`): corroboration + collusion severing, backed by `sm-arp`. |
 
 More adapters (auth delegation, content-addressed datafacts, versioned comms,
 gossip registry) are planned; see `docs/conformance.md`.
 
-## Identity: `sm_ed25519_rotating`
+## Identity: `ed25519_rotating`
 
 Real Ed25519 signing (via [`cryptography`](https://cryptography.io)), did:key
 identities, and **key rotation with continuity**: a new key is signed by the
@@ -49,7 +49,7 @@ This defeats two attacks the default `did_key` plugin cannot express:
   new key's window.
 
 ```python
-from nest_stellarminds.identity import Ed25519RotatingIdentity
+from nest_adapters.identity import Ed25519RotatingIdentity
 from nest_core.types import AgentId
 
 ident = Ed25519RotatingIdentity(AgentId("a1"), seed=b"scenario-seed")
@@ -70,7 +70,7 @@ byte-identical trace, which is what Nanda Town's seed-bank check enforces.
 ### did:key format
 
 did:key values are `did:key:z<base58btc(0xed01 ‖ pubkey32)>`, byte-compatible
-with the Stellarminds `sm-arp` / chapter-protocol did:key encoding.
+with the `sm-arp` / chapter-protocol did:key encoding.
 
 ## Identity: `ed25519_didkey`
 
@@ -86,7 +86,7 @@ itself deterministic, so traces replay byte-for-byte. Signatures use
 `principal_did` the trust plugin keys on.
 
 ```python
-from nest_stellarminds.identity_didkey import Ed25519DidKeyIdentity
+from nest_adapters.identity_didkey import Ed25519DidKeyIdentity
 from nest_core.types import AgentId
 
 ident = Ed25519DidKeyIdentity(AgentId("a1"))
@@ -125,7 +125,7 @@ staking primitive).
 
 ```python
 import json
-from nest_stellarminds.trust_receipts import AgentReceiptsTrust
+from nest_adapters.trust_receipts import AgentReceiptsTrust
 from nest_core.types import AgentId, Evidence
 
 trust = AgentReceiptsTrust()
@@ -137,7 +137,7 @@ rep = await trust.score(AgentId("a1"))           # corroborated, normalized to [
 
 ## Validators
 
-`nest_stellarminds.validators.validate_identity_rotation(trace_path)` reads a
+`nest_adapters.validators.validate_identity_rotation(trace_path)` reads a
 JSONL trace and fails if any signed message used a key outside its validity
 window or backdated its signing tick. It **passes** against this plugin and
 **fails** against the default `did_key` plugin (which has no key-window
@@ -151,4 +151,4 @@ make ci-local   # uv sync, ruff check, ruff format --check, pyright (strict), py
 
 ---
 
-<sub>Built by [labs.stellarminds.ai](https://labs.stellarminds.ai). Apache-2.0.</sub>
+<sub>Part of the NANDA project. Apache-2.0.</sub>

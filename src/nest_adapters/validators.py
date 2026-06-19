@@ -16,7 +16,7 @@ It reports two properties:
 
 Example::
 
-    from nest_stellarminds.validators import validate_identity_rotation
+    from nest_adapters.validators import validate_identity_rotation
     results = validate_identity_rotation(Path("traces/identity_rotation.jsonl"))
 """
 
@@ -29,9 +29,9 @@ from typing import cast
 from nest_core.types import AgentId, Signature
 from nest_core.validators import ValidationResult
 
-from nest_stellarminds.determinism import decode_signature_value
-from nest_stellarminds.identity import ALGORITHM, Ed25519RotatingIdentity
-from nest_stellarminds.wire import KIND_IDENTITY, KIND_ROTATION, KIND_SIGNED, parse_message
+from nest_adapters.determinism import decode_signature_value
+from nest_adapters.identity import ALGORITHM, Ed25519RotatingIdentity
+from nest_adapters.wire import KIND_IDENTITY, KIND_ROTATION, KIND_SIGNED, parse_message
 
 _EMITTING_KINDS = frozenset({"send", "broadcast"})
 

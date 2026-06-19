@@ -18,8 +18,8 @@ from sm_arp.identity import Identity as ArpIdentity
 from sm_arp.receipts import build_action, issue_receipt, verify_receipt
 from sm_arp.vrp import cosign_receipt, is_corroborated
 
-from nest_stellarminds.identity_didkey import Ed25519DidKeyIdentity, did_for, seed_for
-from nest_stellarminds.trust_receipts import AgentReceiptsTrust
+from nest_adapters.identity_didkey import Ed25519DidKeyIdentity, did_for, seed_for
+from nest_adapters.trust_receipts import AgentReceiptsTrust
 
 
 @pytest.mark.asyncio

@@ -125,7 +125,7 @@ def did_key(pub: bytes) -> str:
     """Encode a raw Ed25519 public key as a ``did:key`` string.
 
     Format is ``did:key:z<base58btc(0xed01 ‖ pub)>`` — byte-compatible with the
-    Stellarminds ``sm-arp`` / chapter-protocol did:key encoding.
+    ``sm-arp`` / chapter-protocol did:key encoding.
 
     Example::
 

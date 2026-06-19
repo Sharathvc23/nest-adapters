@@ -12,8 +12,8 @@ from sm_arp.identity import Identity as ArpIdentity
 from sm_arp.receipts import build_action, issue_receipt, verify_receipt
 from sm_arp.vrp import is_corroborated, reputation_score_v2
 
-from nest_stellarminds.identity_didkey import seed_for
-from nest_stellarminds.trust_receipts import (
+from nest_adapters.identity_didkey import seed_for
+from nest_adapters.trust_receipts import (
     NORMALIZATION_K,
     AgentReceiptsTrust,
     _normalize,

@@ -13,7 +13,7 @@ from typing import TYPE_CHECKING
 
 from nest_core.types import AgentId
 
-from nest_stellarminds.determinism import (
+from nest_adapters.determinism import (
     decode_signature_value,
     derive_signing_key,
     did_key,
@@ -74,7 +74,7 @@ def test_did_key_is_ed25519_multicodec_and_reversible() -> None:
     did = did_key(pub)
     assert did.startswith("did:key:z")
     # round-trips back to the same raw public key
-    from nest_stellarminds.determinism import public_key_from_did
+    from nest_adapters.determinism import public_key_from_did
 
     assert public_key_from_did(did) == pub
 

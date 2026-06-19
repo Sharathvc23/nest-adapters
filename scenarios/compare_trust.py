@@ -34,8 +34,8 @@ from typing import TYPE_CHECKING
 from nest_core.runner import ScenarioRunner
 from nest_core.scenario import ScenarioConfig
 
-from nest_stellarminds.run import register_scenarios
-from nest_stellarminds.scenarios_builtin.reputation_receipts import honest_ids, ring_ids
+from nest_adapters.run import register_scenarios
+from nest_adapters.scenarios_builtin.reputation_receipts import honest_ids, ring_ids
 
 if TYPE_CHECKING:
     from nest_core.types import AgentId

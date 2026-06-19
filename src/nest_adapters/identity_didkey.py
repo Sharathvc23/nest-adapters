@@ -5,7 +5,7 @@ NEST's reference identity plugin (``did_key.py``) is a *toy*: its docstring
 says "not production cryptography; for real deployments, swap to a proper
 Ed25519 implementation." This module is that swap. It implements the
 ``nest_core.layers.identity.Identity`` ``Protocol`` with real Ed25519
-(RFC 8032) signing via Stellarminds' published ``sm-arp`` library.
+(RFC 8032) signing via the published ``sm-arp`` library.
 
 Determinism — the property that lets NEST replay a trace byte-for-byte — is
 preserved for two independent reasons:

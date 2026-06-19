@@ -2,7 +2,7 @@
 """Agent-receipt reputation for Nanda Town (NEST) — the "nest-arp" trust plugin.
 
 Implements the ``nest_core.layers.trust.Trust`` ``Protocol`` on top of
-Stellarminds' published ``sm-arp`` library. Instead of the reference plugin's
+the published ``sm-arp`` library. Instead of the reference plugin's
 running mean of self-asserted feedback, reputation here is derived from
 **cross-signed ARP receipts** (VRP ``nanda-rep/0.2``):
 
@@ -55,7 +55,7 @@ from sm_arp.vrp import (  # noqa: PLC2701
     reputation_score_v2,
 )
 
-from nest_stellarminds.identity_didkey import Ed25519DidKeyIdentity, did_for
+from nest_adapters.identity_didkey import Ed25519DidKeyIdentity, did_for
 
 logger = logging.getLogger(__name__)
 

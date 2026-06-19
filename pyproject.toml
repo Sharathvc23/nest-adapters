@@ -4,14 +4,14 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "nest-stellarminds"
+name = "nest-adapters"
 version = "0.1.0"
-description = "Stellarminds protocol adapters for Nanda Town (NEST): real Ed25519 identity (rotating + did:key) and agent-receipt reputation, backed by sm-arp."
+description = "NANDA protocol adapters for Nanda Town (NEST): real Ed25519 identity (rotating + did:key) and agent-receipt reputation, backed by sm-arp."
 readme = "README.md"
 requires-python = ">=3.12"
 license = "Apache-2.0"
 license-files = ["LICENSE"]
-authors = [{ name = "Stellarminds Labs" }]
+authors = [{ name = "NANDA" }]
 keywords = [
     "nanda",
     "nest",
@@ -46,17 +46,17 @@ dependencies = [
 scenarios = ["nest-plugins-reference>=0.1.1"]
 
 [project.urls]
-Homepage = "https://labs.stellarminds.ai"
-Repository = "https://github.com/Sharathvc23/nest-stellarminds"
+Homepage = "https://github.com/Sharathvc23/nest-adapters"
+Repository = "https://github.com/Sharathvc23/nest-adapters"
 
 # Nanda Town discovers plugins via these entry-point groups (nest.plugins.<layer>).
 # Adding a (layer, name) here is all it takes for `nest run` to resolve our plugin.
 [project.entry-points."nest.plugins.identity"]
-sm_ed25519_rotating = "nest_stellarminds.identity:Ed25519RotatingIdentity"
-ed25519_didkey = "nest_stellarminds.identity_didkey:Ed25519DidKeyIdentity"
+ed25519_rotating = "nest_adapters.identity:Ed25519RotatingIdentity"
+ed25519_didkey = "nest_adapters.identity_didkey:Ed25519DidKeyIdentity"
 
 [project.entry-points."nest.plugins.trust"]
-agent_receipts = "nest_stellarminds.trust_receipts:AgentReceiptsTrust"
+agent_receipts = "nest_adapters.trust_receipts:AgentReceiptsTrust"
 
 [dependency-groups]
 dev = [
@@ -70,7 +70,7 @@ dev = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/nest_stellarminds"]
+packages = ["src/nest_adapters"]
 
 [tool.ruff]
 line-length = 100

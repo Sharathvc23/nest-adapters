@@ -50,7 +50,7 @@ from sm_arp.identity import Identity as ArpIdentity
 from sm_arp.receipts import build_action, issue_receipt
 from sm_arp.vrp import cosign_receipt
 
-from nest_stellarminds.identity_didkey import seed_for
+from nest_adapters.identity_didkey import seed_for
 
 if TYPE_CHECKING:
     from nest_core.scenario import ScenarioConfig

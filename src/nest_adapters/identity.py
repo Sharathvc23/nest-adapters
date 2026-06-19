@@ -3,13 +3,13 @@
 
 Real Ed25519 signing with key rotation and *historical* (as-of) verification.
 A signature carries the id of the key that made it and the logical tick it was
-made at (packed into ``Signature.value`` by :mod:`nest_stellarminds.determinism`).
+made at (packed into ``Signature.value`` by :mod:`nest_adapters.determinism`).
 Verification is parameterised by an ``as_of`` time so a signature from a key
 that has since rotated out still verifies when audited within that key's
 validity window, but is rejected for observations after rotation.
 
 This implements the ``nest_core.layers.identity.Identity`` ``Protocol`` and is
-registered under ``("identity", "sm_ed25519_rotating")`` via entry points.
+registered under ``("identity", "ed25519_rotating")`` via entry points.
 
 Example::
 
@@ -30,7 +30,7 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import (
 )
 from nest_core.types import AgentId, AgentIdentity, Signature
 
-from nest_stellarminds.determinism import (
+from nest_adapters.determinism import (
     KeyId,
     decode_signature_value,
     derive_signing_key,

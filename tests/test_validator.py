@@ -14,16 +14,16 @@ from typing import TYPE_CHECKING
 from nest_core.scenario import ScenarioConfig
 from nest_core.types import AgentId
 
-from nest_stellarminds.determinism import (
+from nest_adapters.determinism import (
     derive_signing_key,
     encode_signature_value,
     key_id_for,
     public_bytes,
     signing_bytes,
 )
-from nest_stellarminds.run import run_config
-from nest_stellarminds.validators import validate_identity_rotation
-from nest_stellarminds.wire import encode_identity, encode_rotation_event, encode_signed
+from nest_adapters.run import run_config
+from nest_adapters.validators import validate_identity_rotation
+from nest_adapters.wire import encode_identity, encode_rotation_event, encode_signed
 
 if TYPE_CHECKING:
     from pathlib import Path

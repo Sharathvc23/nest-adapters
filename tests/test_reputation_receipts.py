@@ -21,9 +21,9 @@ from sm_arp.vrp import (
     _severed_dids,  # noqa: PLC2701
 )
 
-from nest_stellarminds.identity_didkey import did_for
-from nest_stellarminds.run import run_scenario
-from nest_stellarminds.scenarios_builtin.reputation_receipts import (
+from nest_adapters.identity_didkey import did_for
+from nest_adapters.run import run_scenario
+from nest_adapters.scenarios_builtin.reputation_receipts import (
     HONEST_COUNT,
     RING_COUNT,
     build_topology,
@@ -89,7 +89,7 @@ def test_no_cross_edges_between_honest_and_ring() -> None:
 def test_scenario_is_deterministic_per_plugin(trust: str, tmp_path: Path) -> None:
     from nest_core.scenario import ScenarioConfig
 
-    from nest_stellarminds.run import run_config
+    from nest_adapters.run import run_config
 
     def run(out: Path) -> bytes:
         cfg = ScenarioConfig.from_yaml(str(SCENARIO))

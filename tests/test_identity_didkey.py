@@ -6,7 +6,7 @@ from __future__ import annotations
 import pytest
 from nest_core.types import AgentId, Signature
 
-from nest_stellarminds.identity_didkey import (
+from nest_adapters.identity_didkey import (
     ALGORITHM,
     Ed25519DidKeyIdentity,
     did_for,

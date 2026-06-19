@@ -200,46 +200,7 @@ wheels = [
 ]
 
 [[package]]
-name = "nest-core"
-version = "0.1.4"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "pydantic" },
-    { name = "pyyaml" },
-    { name = "typer" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/9c/51/70737c8598bd446980cca3cf8b5995875d1b27ec742cb5a1ed20b3095d22/nest_core-0.1.4.tar.gz", hash = "sha256:c40a06ab829242665b8f60d7c742986bd42b2b9db23df23df5739365b6ec66e7", size = 55848, upload-time = "2026-05-21T17:48:23.662Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/7d/87/eca28cd3914c7eeaf86d83dbade5d33de1d3859e3f77e01830228c041ce2/nest_core-0.1.4-py3-none-any.whl", hash = "sha256:40c773bb33ae1294c81e6a6422f300dd9cc76915608641409e49c7195a0ff18d", size = 64075, upload-time = "2026-05-21T17:48:22.41Z" },
-]
-
-[[package]]
-name = "nest-plugins-reference"
-version = "0.1.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "nest-core" },
-    { name = "nest-sdk" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/fd/77/555e682e4f60c03cb01716cbe3481c5064cd18a28b8588d22a74c094b866/nest_plugins_reference-0.1.1.tar.gz", hash = "sha256:be5c83c91eeccfbbf110c5c6bef903710be8219d00136bbc6e9039aac089498e", size = 13282, upload-time = "2026-05-21T17:48:21.663Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/70/e3/c3801ccc39ac482af894efb5ee238ca962fcbf5dde3540b2981d5c0cc673/nest_plugins_reference-0.1.1-py3-none-any.whl", hash = "sha256:6dab9100f555a02932415682abcc6098e4d382d0b547dfff617df7848236eb5c", size = 18654, upload-time = "2026-05-21T17:48:20.567Z" },
-]
-
-[[package]]
-name = "nest-sdk"
-version = "0.1.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "nest-core" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/b3/b3/de8bfe4d12c353a0d59fb9a07ce75aeb106af89a31506302f625c76a053d/nest_sdk-0.1.0.tar.gz", hash = "sha256:e8e8ad1be9cb41f1d5b12f1813525549b2415b8138a41e38bcb69f5a9af97d76", size = 2408, upload-time = "2026-05-16T22:02:12.494Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/29/f0/13bbf77c99bba0e2da7405e1ebf625c3717c2ec420438d9f5462a01fa3d7/nest_sdk-0.1.0-py3-none-any.whl", hash = "sha256:b5eec8cbcd15e19d1c25b2243a1827df7ec4272c80c554401bad468bf48a3ec9", size = 2474, upload-time = "2026-05-16T22:02:10.902Z" },
-]
-
-[[package]]
-name = "nest-stellarminds"
+name = "nest-adapters"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
@@ -282,6 +243,45 @@ dev = [
     { name = "pytest-asyncio", specifier = ">=1.0" },
     { name = "pyyaml", specifier = ">=6.0" },
     { name = "ruff", specifier = ">=0.15" },
+]
+
+[[package]]
+name = "nest-core"
+version = "0.1.4"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pydantic" },
+    { name = "pyyaml" },
+    { name = "typer" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/9c/51/70737c8598bd446980cca3cf8b5995875d1b27ec742cb5a1ed20b3095d22/nest_core-0.1.4.tar.gz", hash = "sha256:c40a06ab829242665b8f60d7c742986bd42b2b9db23df23df5739365b6ec66e7", size = 55848, upload-time = "2026-05-21T17:48:23.662Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/7d/87/eca28cd3914c7eeaf86d83dbade5d33de1d3859e3f77e01830228c041ce2/nest_core-0.1.4-py3-none-any.whl", hash = "sha256:40c773bb33ae1294c81e6a6422f300dd9cc76915608641409e49c7195a0ff18d", size = 64075, upload-time = "2026-05-21T17:48:22.41Z" },
+]
+
+[[package]]
+name = "nest-plugins-reference"
+version = "0.1.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "nest-core" },
+    { name = "nest-sdk" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/fd/77/555e682e4f60c03cb01716cbe3481c5064cd18a28b8588d22a74c094b866/nest_plugins_reference-0.1.1.tar.gz", hash = "sha256:be5c83c91eeccfbbf110c5c6bef903710be8219d00136bbc6e9039aac089498e", size = 13282, upload-time = "2026-05-21T17:48:21.663Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/70/e3/c3801ccc39ac482af894efb5ee238ca962fcbf5dde3540b2981d5c0cc673/nest_plugins_reference-0.1.1-py3-none-any.whl", hash = "sha256:6dab9100f555a02932415682abcc6098e4d382d0b547dfff617df7848236eb5c", size = 18654, upload-time = "2026-05-21T17:48:20.567Z" },
+]
+
+[[package]]
+name = "nest-sdk"
+version = "0.1.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "nest-core" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/b3/b3/de8bfe4d12c353a0d59fb9a07ce75aeb106af89a31506302f625c76a053d/nest_sdk-0.1.0.tar.gz", hash = "sha256:e8e8ad1be9cb41f1d5b12f1813525549b2415b8138a41e38bcb69f5a9af97d76", size = 2408, upload-time = "2026-05-16T22:02:12.494Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/29/f0/13bbf77c99bba0e2da7405e1ebf625c3717c2ec420438d9f5462a01fa3d7/nest_sdk-0.1.0-py3-none-any.whl", hash = "sha256:b5eec8cbcd15e19d1c25b2243a1827df7ec4272c80c554401bad468bf48a3ec9", size = 2474, upload-time = "2026-05-16T22:02:10.902Z" },
 ]
 
 [[package]]
