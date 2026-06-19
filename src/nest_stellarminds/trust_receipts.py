@@ -9,7 +9,9 @@ running mean of self-asserted feedback, reputation here is derived from
 * a receipt only counts if its Ed25519 signature verifies (:func:`verify_receipt`),
 * and it is *corroborated* — the counterparty co-signed it (:func:`is_corroborated`),
 * and it does not sit inside a collusion ring that VRP severs from the honest
-  core (handled inside :func:`reputation_score_v2` over a full ledger).
+  core — :meth:`AgentReceiptsTrust.score` reduces an agent's receipts to the
+  globally-effective set (:func:`_effective_receipts` over the *whole* ledger)
+  before scoring, so a severed ring member collapses to score 0 / confidence 0.
 
 NEST's ``Evidence`` has no receipt field, so a cross-signed receipt is carried
 as JSON in ``evidence.detail``. Stock scenarios (e.g. the marketplace) pass a
@@ -41,7 +43,17 @@ from nest_core.types import (
     ReputationScore,
 )
 from sm_arp.receipts import verify_receipt
-from sm_arp.vrp import corroboration_rate, reputation_score_v2
+
+# ``_effective_receipts`` applies global collusion severance (Tarjan-SCC over the
+# corroboration graph) and is the primitive ``score`` needs to gate a single
+# agent's receipts by the *whole-ledger* graph. sm-arp is a sibling-controlled
+# dependency, so depending on this internal is acceptable; there is no public
+# equivalent that returns the per-did gated receipt set.
+from sm_arp.vrp import (  # noqa: PLC2701
+    _effective_receipts,  # pyright: ignore[reportPrivateUsage]
+    corroboration_rate,
+    reputation_score_v2,
+)
 
 from nest_stellarminds.identity_didkey import Ed25519DidKeyIdentity, did_for
 
@@ -115,11 +127,21 @@ class AgentReceiptsTrust:
         any plain-string-detail reports; absent both, returns the reference
         neutral prior (0.5, confidence 0).
 
-        Note (known boundary): per-agent ``score`` reflects *this agent's* own
-        corroborated receipts. Collusion-ring severing is a property of the
-        *global* corroboration graph and is exercised at the library level
-        (``reputation_score_v2`` over a full ledger) — see the
-        ``reputation_receipts`` benchmark follow-up.
+        Collusion-ring severing is a property of the *global* corroboration
+        graph, so the agent's receipts are first reduced to the **globally
+        effective** set (:func:`_effective_receipts` over the *whole* ledger:
+        ARP-valid AND corroborated AND not inside a collusion component that
+        VRP severs from the honest anchor). The agent's score and corroboration
+        confidence are then computed over that gated subset. A member of a
+        severed ring therefore drops to ``score == 0.0`` with collapsed
+        ``confidence == 0.0`` — its wash-traded receipts, though individually
+        corroborated, contribute nothing — while honest agents in the anchor
+        SCC retain their full corroborated score. See the
+        ``reputation_receipts`` benchmark for the end-to-end demonstration.
+
+        ``sample_count`` reports the agent's *raw* receipt count (how much it
+        claimed), so a severed agent shows ``sample_count > 0`` yet
+        ``confidence == 0.0`` — the signal that its claims were discounted.
 
         Example::
 
@@ -128,8 +150,12 @@ class AgentReceiptsTrust:
         did = self._did_of(agent)
         mine = [r for r in self._ledger if r.get("principal_did") == did]
         if mine:
-            raw = reputation_score_v2(mine, is_valid=lambda r: verify_receipt(r).ok)
-            conf = corroboration_rate(mine, is_valid=lambda r: verify_receipt(r).ok)
+            # Apply global collusion severance, then keep only this agent's
+            # surviving receipts — severed ring members are left with none.
+            effective = _effective_receipts(self._ledger, is_valid=lambda r: verify_receipt(r).ok)
+            mine_eff = [r for r in effective if r.get("principal_did") == did]
+            raw = reputation_score_v2(mine_eff, is_valid=lambda r: verify_receipt(r).ok)
+            conf = corroboration_rate(mine_eff, is_valid=lambda r: verify_receipt(r).ok)
             return ReputationScore(
                 agent_id=agent,
                 score=_normalize(raw),
