@@ -16,14 +16,14 @@ from __future__ import annotations
 import pytest
 from nest_core.types import AgentId, Signature
 
-from nest_stellarminds.determinism import (
+from nest_adapters.determinism import (
     derive_signing_key,
     encode_signature_value,
     key_id_for,
     public_bytes,
     signing_bytes,
 )
-from nest_stellarminds.identity import Ed25519RotatingIdentity
+from nest_adapters.identity import Ed25519RotatingIdentity
 
 ALG = "ed25519-rotating/0.1"
 

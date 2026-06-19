@@ -4,15 +4,28 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "nest-stellarminds"
+name = "nest-adapters"
 version = "0.1.0"
-description = "Stellarminds protocol adapters for Nanda Town (NEST): real Ed25519 rotating identity, and more."
+description = "NANDA protocol adapters for Nanda Town (NEST): real Ed25519 identity (rotating + did:key) and agent-receipt reputation, backed by sm-arp."
 readme = "README.md"
 requires-python = ">=3.12"
 license = "Apache-2.0"
 license-files = ["LICENSE"]
-authors = [{ name = "Stellarminds Labs" }]
-keywords = ["nanda", "nest", "agent", "protocol", "ed25519", "identity", "key-rotation"]
+authors = [{ name = "NANDA" }]
+keywords = [
+    "nanda",
+    "nest",
+    "agent",
+    "protocol",
+    "ed25519",
+    "identity",
+    "key-rotation",
+    "did-key",
+    "reputation",
+    "trust",
+    "arp",
+    "receipts",
+]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
@@ -24,6 +37,7 @@ classifiers = [
 dependencies = [
     "nest-core>=0.1.4",
     "cryptography>=43.0.0",
+    "sm-arp>=0.2.1,<0.3",
 ]
 
 [project.optional-dependencies]
@@ -32,13 +46,17 @@ dependencies = [
 scenarios = ["nest-plugins-reference>=0.1.1"]
 
 [project.urls]
-Homepage = "https://labs.stellarminds.ai"
-Repository = "https://github.com/Sharathvc23/nest-stellarminds"
+Homepage = "https://github.com/Sharathvc23/nest-adapters"
+Repository = "https://github.com/Sharathvc23/nest-adapters"
 
 # Nanda Town discovers plugins via these entry-point groups (nest.plugins.<layer>).
 # Adding a (layer, name) here is all it takes for `nest run` to resolve our plugin.
 [project.entry-points."nest.plugins.identity"]
-sm_ed25519_rotating = "nest_stellarminds.identity:Ed25519RotatingIdentity"
+ed25519_rotating = "nest_adapters.identity:Ed25519RotatingIdentity"
+ed25519_didkey = "nest_adapters.identity_didkey:Ed25519DidKeyIdentity"
+
+[project.entry-points."nest.plugins.trust"]
+agent_receipts = "nest_adapters.trust_receipts:AgentReceiptsTrust"
 
 [dependency-groups]
 dev = [
@@ -52,7 +70,7 @@ dev = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/nest_stellarminds"]
+packages = ["src/nest_adapters"]
 
 [tool.ruff]
 line-length = 100
@@ -65,6 +83,20 @@ select = ["E", "F", "I", "N", "W", "UP", "B", "A", "SIM", "TCH"]
 include = ["src", "tests"]
 typeCheckingMode = "strict"
 pythonVersion = "3.12"
+# sm-arp is a runtime dependency that does not ship a py.typed marker, so its
+# functions are untyped from pyright's view. Don't fail strict mode on the
+# absence of third-party stubs (the only stubless dep we pull in).
+reportMissingTypeStubs = false
+
+# Tests legitimately white-box plugin internals (normalization curve, the held
+# identity, the parity stake map) and exercise sm-arp's untyped helpers; relax
+# the corresponding strict diagnostics for the test tree only. src/ stays strict.
+[[tool.pyright.executionEnvironments]]
+root = "tests"
+reportPrivateUsage = false
+reportUnknownArgumentType = false
+reportUnknownVariableType = false
+reportUnknownLambdaType = false
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

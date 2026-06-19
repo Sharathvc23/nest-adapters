@@ -6,8 +6,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from nest_stellarminds.run import run_scenario
-from nest_stellarminds.validators import validate_identity_rotation
+from nest_adapters.run import run_scenario
+from nest_adapters.validators import validate_identity_rotation
 
 SCENARIO = Path(__file__).parent.parent / "scenarios" / "identity_rotation.yaml"
 

@@ -20,7 +20,7 @@ from typing import TYPE_CHECKING, Any
 from nest_core.sim.agent import AgentContext, StateMachineAgent
 from nest_core.types import AgentId
 
-from nest_stellarminds.wire import encode_identity, encode_rotation_event, encode_signed
+from nest_adapters.wire import encode_identity, encode_rotation_event, encode_signed
 
 if TYPE_CHECKING:
     from nest_core.scenario import ScenarioConfig

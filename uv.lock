@@ -21,6 +21,15 @@ wheels = [
 ]
 
 [[package]]
+name = "base58"
+version = "2.1.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/7f/45/8ae61209bb9015f516102fa559a2914178da1d5868428bd86a1b4421141d/base58-2.1.1.tar.gz", hash = "sha256:c5d0cb3f5b6e81e8e35da5754388ddcc6d0d14b6c6a132cb93d69ed580a7278c", size = 6528, upload-time = "2021-10-30T22:12:17.858Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/4a/45/ec96b29162a402fc4c1c5512d114d7b3787b9d1c2ec241d9568b4816ee23/base58-2.1.1-py3-none-any.whl", hash = "sha256:11a36f4d3ce51dfc1043f3218591ac4eb1ceb172919cebe05b52a5bcc8d245c2", size = 5621, upload-time = "2021-10-30T22:12:16.658Z" },
+]
+
+[[package]]
 name = "cffi"
 version = "2.0.0"
 source = { registry = "https://pypi.org/simple" }
@@ -161,6 +170,15 @@ wheels = [
 ]
 
 [[package]]
+name = "jcs"
+version = "0.2.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/47/e5/9d547f0d42ba00f68eec773aa7b2145e0c0335eb632cbaf519f480a429af/jcs-0.2.1.tar.gz", hash = "sha256:9f20360b2f3b0a410d65493b448f96306d80e37fb46283f3f4aa5db2c7c1472b", size = 6886, upload-time = "2022-04-10T14:41:24.904Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c0/d4/9a99bc15266a842bd14a1913afdb05182888ebab035666c1ce8a64537ca2/jcs-0.2.1-py3-none-any.whl", hash = "sha256:e23a3e1de60f832d33cd811bb9c3b3be79219cdf95f63b88f0972732c3fa8476", size = 7603, upload-time = "2022-04-10T14:41:23.207Z" },
+]
+
+[[package]]
 name = "markdown-it-py"
 version = "4.2.0"
 source = { registry = "https://pypi.org/simple" }
@@ -179,6 +197,52 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/d6/54/cfe61301667036ec958cb99bd3efefba235e65cdeb9c84d24a8293ba1d90/mdurl-0.1.2.tar.gz", hash = "sha256:bb413d29f5eea38f31dd4754dd7377d4465116fb207585f97bf925588687c1ba", size = 8729, upload-time = "2022-08-14T12:40:10.846Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl", hash = "sha256:84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8", size = 9979, upload-time = "2022-08-14T12:40:09.779Z" },
+]
+
+[[package]]
+name = "nest-adapters"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "cryptography" },
+    { name = "nest-core" },
+    { name = "sm-arp" },
+]
+
+[package.optional-dependencies]
+scenarios = [
+    { name = "nest-plugins-reference" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "hypothesis" },
+    { name = "nest-plugins-reference" },
+    { name = "pyright" },
+    { name = "pytest" },
+    { name = "pytest-asyncio" },
+    { name = "pyyaml" },
+    { name = "ruff" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "cryptography", specifier = ">=43.0.0" },
+    { name = "nest-core", specifier = ">=0.1.4" },
+    { name = "nest-plugins-reference", marker = "extra == 'scenarios'", specifier = ">=0.1.1" },
+    { name = "sm-arp", specifier = ">=0.2.1,<0.3" },
+]
+provides-extras = ["scenarios"]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "hypothesis", specifier = ">=6.0" },
+    { name = "nest-plugins-reference", specifier = ">=0.1.1" },
+    { name = "pyright", specifier = ">=1.1.400" },
+    { name = "pytest", specifier = ">=9.0" },
+    { name = "pytest-asyncio", specifier = ">=1.0" },
+    { name = "pyyaml", specifier = ">=6.0" },
+    { name = "ruff", specifier = ">=0.15" },
 ]
 
 [[package]]
@@ -218,50 +282,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/b3/b3/de8bfe4d12c353a0d59fb9a07ce75aeb106af89a31506302f625c76a053d/nest_sdk-0.1.0.tar.gz", hash = "sha256:e8e8ad1be9cb41f1d5b12f1813525549b2415b8138a41e38bcb69f5a9af97d76", size = 2408, upload-time = "2026-05-16T22:02:12.494Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/29/f0/13bbf77c99bba0e2da7405e1ebf625c3717c2ec420438d9f5462a01fa3d7/nest_sdk-0.1.0-py3-none-any.whl", hash = "sha256:b5eec8cbcd15e19d1c25b2243a1827df7ec4272c80c554401bad468bf48a3ec9", size = 2474, upload-time = "2026-05-16T22:02:10.902Z" },
-]
-
-[[package]]
-name = "nest-stellarminds"
-version = "0.1.0"
-source = { editable = "." }
-dependencies = [
-    { name = "cryptography" },
-    { name = "nest-core" },
-]
-
-[package.optional-dependencies]
-scenarios = [
-    { name = "nest-plugins-reference" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "hypothesis" },
-    { name = "nest-plugins-reference" },
-    { name = "pyright" },
-    { name = "pytest" },
-    { name = "pytest-asyncio" },
-    { name = "pyyaml" },
-    { name = "ruff" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "cryptography", specifier = ">=43.0.0" },
-    { name = "nest-core", specifier = ">=0.1.4" },
-    { name = "nest-plugins-reference", marker = "extra == 'scenarios'", specifier = ">=0.1.1" },
-]
-provides-extras = ["scenarios"]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "hypothesis", specifier = ">=6.0" },
-    { name = "nest-plugins-reference", specifier = ">=0.1.1" },
-    { name = "pyright", specifier = ">=1.1.400" },
-    { name = "pytest", specifier = ">=9.0" },
-    { name = "pytest-asyncio", specifier = ">=1.0" },
-    { name = "pyyaml", specifier = ">=6.0" },
-    { name = "ruff", specifier = ">=0.15" },
 ]
 
 [[package]]
@@ -532,6 +552,20 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/58/15/8b3609fd3830ef7b27b655beb4b4e9c62313a4e8da8c676e142cc210d58e/shellingham-1.5.4.tar.gz", hash = "sha256:8dbca0739d487e5bd35ab3ca4b36e11c4078f3a234bfce294b0a0291363404de", size = 10310, upload-time = "2023-10-24T04:13:40.426Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/e0/f9/0595336914c5619e5f28a1fb793285925a8cd4b432c9da0a987836c7f822/shellingham-1.5.4-py2.py3-none-any.whl", hash = "sha256:7ecfff8f2fd72616f7481040475a65b2bf8af90a56c89140852d1120324e8686", size = 9755, upload-time = "2023-10-24T04:13:38.866Z" },
+]
+
+[[package]]
+name = "sm-arp"
+version = "0.2.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "base58" },
+    { name = "cryptography" },
+    { name = "jcs" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/78/7b/ec320e196dd4a82c2a4a0cc83474cf2302e29eaebb1b33bbb7579e02acd1/sm_arp-0.2.1.tar.gz", hash = "sha256:1d3b0f59c5fed899697434e8f87985d65dbcb06ef2fec4fcffd0fb2765fb4044", size = 26741, upload-time = "2026-06-12T23:49:56.105Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/0b/c7/93a26f264e86dee7062c6b53fc67e3c909d01b62970aad8261e470c24cb5/sm_arp-0.2.1-py3-none-any.whl", hash = "sha256:7c16d475af5430351d9a6332075233b19390f85d228109896981643a71190233", size = 28412, upload-time = "2026-06-12T23:49:54.884Z" },
 ]
 
 [[package]]

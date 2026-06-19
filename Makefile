@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 #
-# nest-stellarminds developer Makefile.
+# nest-adapters developer Makefile.
 #
 # `ci-local` runs the exact 5-command sequence Nanda Town's CONTRIBUTING.md
 # mandates as the Definition of Done, in order, hard-failing on the first red
@@ -11,7 +11,7 @@
 .PHONY: help ci-local hooks
 
 help: ## List available targets.
-	@echo "nest-stellarminds developer targets:"
+	@echo "nest-adapters developer targets:"
 	@echo ""
 	@echo "  make ci-local   Run the full CI sequence (sync, ruff check,"
 	@echo "                  ruff format --check, pyright, pytest)."
