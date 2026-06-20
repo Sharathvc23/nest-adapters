@@ -37,7 +37,7 @@ classifiers = [
 dependencies = [
     "nest-core>=0.1.4",
     "cryptography>=43.0.0",
-    "sm-arp>=0.2.1,<0.3",
+    "sm-arp>=0.2.3,<0.3",
 ]
 
 [project.optional-dependencies]
@@ -89,26 +89,10 @@ python_version = "3.11"
 strict = true
 files = ["src"]
 
-[[tool.mypy.overrides]]
-# sm-arp is a sibling-controlled runtime dependency. Its published wheels
-# (verified: 0.2.1 pinned, 0.2.2 latest, both built 2026-06-19) ship NO PEP 561
-# `py.typed` marker yet, so mypy would otherwise treat the installed package as
-# untyped. `follow_untyped_imports` makes mypy read sm-arp's inline source types
-# directly (the same hints pyright already resolves), so its public API types
-# (e.g. `Identity.did -> str`) flow through without `Any`-laundering casts.
-# Drop this override once sm-arp actually ships the py.typed marker its
-# pyproject declares.
-module = "sm_arp.*"
-follow_untyped_imports = true
-
 [tool.pyright]
 include = ["src", "tests"]
 typeCheckingMode = "strict"
 pythonVersion = "3.12"
-# sm-arp is a runtime dependency that does not ship a py.typed marker, so its
-# functions are untyped from pyright's view. Don't fail strict mode on the
-# absence of third-party stubs (the only stubless dep we pull in).
-reportMissingTypeStubs = false
 
 # Tests legitimately white-box plugin internals (normalization curve, the held
 # identity, the parity stake map) and exercise sm-arp's untyped helpers; relax
