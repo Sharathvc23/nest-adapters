@@ -15,10 +15,10 @@ from pathlib import Path
 import pytest
 from sm_arp.receipts import verify_receipt
 from sm_arp.vrp import (
-    _corroboration_graph,  # noqa: PLC2701  (sibling-controlled dep; topology assertion)
-    _internal_density,  # noqa: PLC2701
-    _sccs,  # noqa: PLC2701
-    _severed_dids,  # noqa: PLC2701
+    _corroboration_graph,
+    _internal_density,
+    _sccs,
+    _severed_dids,
 )
 
 from nest_adapters.identity_didkey import did_for

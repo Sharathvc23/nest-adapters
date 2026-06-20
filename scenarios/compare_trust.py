@@ -222,13 +222,13 @@ def main() -> int:
         raise SystemExit(main())
     """
     rows = asyncio.run(run_comparison())
-    print(format_table(rows))  # noqa: T201
+    print(format_table(rows))
     try:
         assert_detection(rows)
     except AssertionError as exc:
-        print(f"\nREGRESSION: {exc}", file=sys.stderr)  # noqa: T201
+        print(f"\nREGRESSION: {exc}", file=sys.stderr)
         return 1
-    print("\nOK: malicious detection 4/4 (agent_receipts) vs 0/4 (score_average).")  # noqa: T201
+    print("\nOK: malicious detection 4/4 (agent_receipts) vs 0/4 (score_average).")
     return 0
 
 
