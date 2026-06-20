@@ -62,6 +62,7 @@ agent_receipts = "nest_adapters.trust_receipts:AgentReceiptsTrust"
 dev = [
     "ruff>=0.15",
     "pyright>=1.1.400",
+    "mypy>=1.14",
     "pytest>=9.0",
     "pytest-asyncio>=1.0",
     "hypothesis>=6.0",
@@ -73,11 +74,32 @@ dev = [
 packages = ["src/nest_adapters"]
 
 [tool.ruff]
+target-version = "py311"
 line-length = 100
 src = ["src", "tests"]
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "N", "W", "UP", "B", "A", "SIM", "TCH"]
+# E/F = pycodestyle+pyflakes core, I = import sorting, UP = pyupgrade,
+# B = bugbear, SIM = simplify, C4 = comprehensions, RUF = ruff-native.
+# Kept identical to sm-arp so the two repos share one lint contract.
+select = ["E", "F", "I", "UP", "B", "SIM", "C4", "RUF"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+files = ["src"]
+
+[[tool.mypy.overrides]]
+# sm-arp is a sibling-controlled runtime dependency. Its published wheels
+# (verified: 0.2.1 pinned, 0.2.2 latest, both built 2026-06-19) ship NO PEP 561
+# `py.typed` marker yet, so mypy would otherwise treat the installed package as
+# untyped. `follow_untyped_imports` makes mypy read sm-arp's inline source types
+# directly (the same hints pyright already resolves), so its public API types
+# (e.g. `Identity.did -> str`) flow through without `Any`-laundering casts.
+# Drop this override once sm-arp actually ships the py.typed marker its
+# pyproject declares.
+module = "sm_arp.*"
+follow_untyped_imports = true
 
 [tool.pyright]
 include = ["src", "tests"]

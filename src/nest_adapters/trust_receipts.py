@@ -49,7 +49,7 @@ from sm_arp.receipts import verify_receipt
 # agent's receipts by the *whole-ledger* graph. sm-arp is a sibling-controlled
 # dependency, so depending on this internal is acceptable; there is no public
 # equivalent that returns the per-did gated receipt set.
-from sm_arp.vrp import (  # noqa: PLC2701
+from sm_arp.vrp import (
     _effective_receipts,  # pyright: ignore[reportPrivateUsage]
     corroboration_rate,
     reputation_score_v2,

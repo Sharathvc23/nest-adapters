@@ -83,7 +83,7 @@ def main() -> None:
     parser.add_argument("-o", "--out", default=None, help="Override the output trace path.")
     args = parser.parse_args()
     trace = run_scenario(args.scenario, seed=args.seed, out=args.out)
-    print(f"Trace written to: {trace}")  # noqa: T201
+    print(f"Trace written to: {trace}")
 
 
 if __name__ == "__main__":
