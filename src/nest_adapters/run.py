@@ -33,6 +33,7 @@ def register_scenarios() -> None:
 
         register_scenarios()
     """
+    from nest_adapters.scenarios_builtin.auth_handshake import auth_handshake_factory
     from nest_adapters.scenarios_builtin.datafacts_provenance import datafacts_provenance_factory
     from nest_adapters.scenarios_builtin.identity_rotation import identity_rotation_factory
     from nest_adapters.scenarios_builtin.registry_discovery import registry_discovery_factory
@@ -42,6 +43,7 @@ def register_scenarios() -> None:
     from nest_adapters.scenarios_builtin.sm_marketplace import sm_marketplace_factory
 
     register_scenario("sm_marketplace", sm_marketplace_factory)
+    register_scenario("auth_handshake", auth_handshake_factory)
     register_scenario("datafacts_provenance", datafacts_provenance_factory)
     register_scenario("registry_discovery", registry_discovery_factory)
     register_scenario("identity_rotation", identity_rotation_factory)

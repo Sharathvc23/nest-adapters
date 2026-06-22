@@ -65,6 +65,9 @@ sm_bridge_facts = "nest_adapters.registry_smbridge:SmBridgeRegistry"
 [project.entry-points."nest.plugins.datafacts"]
 arp_receipts = "nest_adapters.datafacts_arp:ArpDataFacts"
 
+[project.entry-points."nest.plugins.auth"]
+did_key = "nest_adapters.auth_didkey:DidAuth"
+
 [dependency-groups]
 dev = [
     "ruff>=0.15",
