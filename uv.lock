@@ -25,6 +25,19 @@ wheels = [
 ]
 
 [[package]]
+name = "anyio"
+version = "4.14.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "idna" },
+    { name = "typing-extensions", marker = "python_full_version < '3.13'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/1c/b5/001890774a9552aff22502b8da382593109ce0c95314abaebbb116567545/anyio-4.14.0.tar.gz", hash = "sha256:b47c1f9ccf73e67021df785332508f99379c68fa7d0684e8e3492cb1d4b23f89", size = 253586, upload-time = "2026-06-15T22:00:49.021Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ba/16/9826f089383c593cdfc4a6e5aca94d9e91ae1692c57af82c3b2aa5e810f7/anyio-4.14.0-py3-none-any.whl", hash = "sha256:dd9b7a2a9799ed6552fde617b2c5df02b7fdd7d88392fc48101e51bae46164d9", size = 123506, upload-time = "2026-06-15T22:00:47.595Z" },
+]
+
+[[package]]
 name = "ast-serialize"
 version = "0.5.0"
 source = { registry = "https://pypi.org/simple" }
@@ -193,6 +206,22 @@ wheels = [
 ]
 
 [[package]]
+name = "fastapi"
+version = "0.138.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "annotated-doc" },
+    { name = "pydantic" },
+    { name = "starlette" },
+    { name = "typing-extensions" },
+    { name = "typing-inspection" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/5b/58/ff455d9fe47c60abadb34b9e05a304b1f05f5ab8000ac01565156b6f5e43/fastapi-0.138.0.tar.gz", hash = "sha256:d445a4877636ad191e7053e08c9bf98cb921a6756776848400bb773d1740c061", size = 419240, upload-time = "2026-06-20T01:18:05.259Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/6c/ff/8496d9847a5fedae775eb49460722d3efaa80487854273e9647ae876218c/fastapi-0.138.0-py3-none-any.whl", hash = "sha256:b6f54fd1bd72c80b0f899f172c61a600f6f7af9b43d4d772a018f35624048cb0", size = 126779, upload-time = "2026-06-20T01:18:03.483Z" },
+]
+
+[[package]]
 name = "hypothesis"
 version = "6.155.2"
 source = { registry = "https://pypi.org/simple" }
@@ -202,6 +231,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/f5/04/64032a1dccd2233615c8a3f701bbb563558575ed017496a24b6d81762c91/hypothesis-6.155.2.tar.gz", hash = "sha256:ae36880287c9c5defe9f199d3d2b67d9947a4da2a46e6c57373cbdf2345b20e1", size = 477765, upload-time = "2026-06-05T16:32:23.63Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/ec/6e/e735f27ac1a530a4cd0a31cd970ec495a3a11830fdc5d281cc292593b330/hypothesis-6.155.2-py3-none-any.whl", hash = "sha256:c85ce6dcd630a90ce501f1d1dd1bc84b97f5649ca8a27e134c8cbf5aa480b1a5", size = 544213, upload-time = "2026-06-05T16:32:21.15Z" },
+]
+
+[[package]]
+name = "idna"
+version = "3.18"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/cd/63/9496c57188a2ee585e0f1db071d75089a11e98aa86eb99d9d7618fc1edce/idna-3.18.tar.gz", hash = "sha256:ffb385a7e039654cef1ab9ef32c6fafe283c0c0467bba1d9029738ce4a14a848", size = 196711, upload-time = "2026-06-02T14:34:07.794Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/1e/5e/d4e9f1a599fb8e573b7b87160658329fbf28d19eac2718f51fc3def3aa5a/idna-3.18-py3-none-any.whl", hash = "sha256:7f952cbe720b688055e3f87de14f5c3e5fdaa8bc3928985c4077ca689de849a2", size = 65455, upload-time = "2026-06-02T14:34:06.319Z" },
 ]
 
 [[package]]
@@ -364,6 +402,7 @@ dependencies = [
     { name = "cryptography" },
     { name = "nest-core" },
     { name = "sm-arp" },
+    { name = "sm-bridge" },
 ]
 
 [package.optional-dependencies]
@@ -388,7 +427,8 @@ requires-dist = [
     { name = "cryptography", specifier = ">=43.0.0" },
     { name = "nest-core", specifier = ">=0.1.4" },
     { name = "nest-plugins-reference", marker = "extra == 'scenarios'", specifier = ">=0.1.1" },
-    { name = "sm-arp", specifier = ">=0.2.1,<0.3" },
+    { name = "sm-arp", specifier = ">=0.2.3,<0.3" },
+    { name = "sm-bridge", git = "https://github.com/Sharathvc23/sm-bridge.git?rev=main" },
 ]
 provides-extras = ["scenarios"]
 
@@ -724,16 +764,25 @@ wheels = [
 
 [[package]]
 name = "sm-arp"
-version = "0.2.1"
+version = "0.2.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "base58" },
     { name = "cryptography" },
     { name = "jcs" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/78/7b/ec320e196dd4a82c2a4a0cc83474cf2302e29eaebb1b33bbb7579e02acd1/sm_arp-0.2.1.tar.gz", hash = "sha256:1d3b0f59c5fed899697434e8f87985d65dbcb06ef2fec4fcffd0fb2765fb4044", size = 26741, upload-time = "2026-06-12T23:49:56.105Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/92/b0/7cbcada9ef684d82925e4740e48f919b06b32f44817f896f614ec390a87e/sm_arp-0.2.3.tar.gz", hash = "sha256:ec73995344b2caa052f439f2d509cb15ea6242ec1450072623ceaee1249540b4", size = 21370, upload-time = "2026-06-20T17:41:09.24Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/0b/c7/93a26f264e86dee7062c6b53fc67e3c909d01b62970aad8261e470c24cb5/sm_arp-0.2.1-py3-none-any.whl", hash = "sha256:7c16d475af5430351d9a6332075233b19390f85d228109896981643a71190233", size = 28412, upload-time = "2026-06-12T23:49:54.884Z" },
+    { url = "https://files.pythonhosted.org/packages/9e/cf/0b327997b464d929cf9964c9ae327eb2aa9839cea1da00cfef0617550bd5/sm_arp-0.2.3-py3-none-any.whl", hash = "sha256:7b0aef33e17d9809f4af931be90baae3696dbf63f27da7b8c2de93ae8b325a38", size = 19752, upload-time = "2026-06-20T17:41:08.145Z" },
+]
+
+[[package]]
+name = "sm-bridge"
+version = "0.3.1"
+source = { git = "https://github.com/Sharathvc23/sm-bridge.git?rev=main#2629ace82850ecc33749d74f433db8f380b67b5a" }
+dependencies = [
+    { name = "fastapi" },
+    { name = "pydantic" },
 ]
 
 [[package]]
@@ -743,6 +792,19 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/e8/c4/ba2f8066cceb6f23394729afe52f3bf7adec04bf9ed2c820b39e19299111/sortedcontainers-2.4.0.tar.gz", hash = "sha256:25caa5a06cc30b6b83d11423433f65d1f9d76c4c6a0c90e3379eaa43b9bfdb88", size = 30594, upload-time = "2021-05-16T22:03:42.897Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/32/46/9cb0e58b2deb7f82b84065f37f3bffeb12413f947f9388e4cac22c4621ce/sortedcontainers-2.4.0-py2.py3-none-any.whl", hash = "sha256:a163dcaede0f1c021485e957a39245190e74249897e2ae4b2aa38595db237ee0", size = 29575, upload-time = "2021-05-16T22:03:41.177Z" },
+]
+
+[[package]]
+name = "starlette"
+version = "1.3.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "anyio" },
+    { name = "typing-extensions", marker = "python_full_version < '3.13'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/eb/e3/7c1dc7381d9f8ab7d854328ebfa884e62cb3f3d8549ddfd37c7814f42afa/starlette-1.3.1.tar.gz", hash = "sha256:05d0213193f2fbaae60e2ecb593b4add4262ad4e46536b54abe36f11a71724e0", size = 2703240, upload-time = "2026-06-12T09:23:11.602Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ec/bb/2799cc2ede3ed41131f8975621e7213dfc7ef4acbbaadfa440f32500c370/starlette-1.3.1-py3-none-any.whl", hash = "sha256:c7372aae11c3c3f26a42df7bd626cec2f47d03483d261d369516a615a53714c6", size = 73632, upload-time = "2026-06-12T09:23:10.017Z" },
 ]
 
 [[package]]

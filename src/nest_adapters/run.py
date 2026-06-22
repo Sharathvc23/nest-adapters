@@ -34,10 +34,12 @@ def register_scenarios() -> None:
         register_scenarios()
     """
     from nest_adapters.scenarios_builtin.identity_rotation import identity_rotation_factory
+    from nest_adapters.scenarios_builtin.registry_discovery import registry_discovery_factory
     from nest_adapters.scenarios_builtin.reputation_receipts import (
         reputation_receipts_factory,
     )
 
+    register_scenario("registry_discovery", registry_discovery_factory)
     register_scenario("identity_rotation", identity_rotation_factory)
     register_scenario("reputation_receipts", reputation_receipts_factory)
 
