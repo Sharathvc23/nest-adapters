@@ -1,0 +1,40 @@
+# SPDX-License-Identifier: Apache-2.0
+name: datafacts_provenance
+description: "Each agent publishes a dataset and then fetches + requests access to a peer's. With datafacts=arp_receipts every fetch verifies the peer's signed ARP provenance receipt and re-checks the content hash, so access only happens when integrity holds; swap datafacts=datafacts_v1 for the stock behaviour with identical agent logic."
+
+tier: 1
+seed: 42
+
+agents:
+  count: 8
+  brain: state-machine
+
+layers:
+  transport: in_memory
+  comms: nest_native
+  identity: ed25519_didkey
+  registry: in_memory
+  auth: jwt
+  trust: score_average
+  payments: prepaid_credits
+  coordination: contract_net
+  negotiation: alternating_offers
+  memory: blackboard
+  privacy: noop
+  datafacts: arp_receipts
+
+task:
+  type: datafacts_provenance
+  config:
+    consume_at_tick: 5
+
+failures:
+  message_drop: 0.0
+
+duration: "ticks: 100"
+
+metrics:
+  - message_count
+
+output:
+  trace: ./traces/datafacts_provenance.jsonl
