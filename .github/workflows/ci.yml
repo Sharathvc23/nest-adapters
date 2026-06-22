@@ -1,0 +1,30 @@
+# SPDX-License-Identifier: Apache-2.0
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
+      # Locked install: nest-core + sm-arp from PyPI, sm-bridge from public git,
+      # nest-plugins-reference (dev) supplies the other 11 stock layers the
+      # scenario tests run against.
+      - run: uv sync --frozen --extra scenarios
+      - name: ruff lint
+        run: uv run ruff check .
+      - name: ruff format check
+        run: uv run ruff format --check src tests
+      - name: mypy (strict)
+        run: uv run mypy
+      - name: pyright (strict)
+        run: uv run pyright
+      - name: tests
+        run: uv run pytest -q

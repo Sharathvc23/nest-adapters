@@ -38,6 +38,7 @@ dependencies = [
     "nest-core>=0.1.4",
     "cryptography>=43.0.0",
     "sm-arp>=0.2.3,<0.3",
+    "sm-bridge @ git+https://github.com/Sharathvc23/sm-bridge.git@main",
 ]
 
 [project.optional-dependencies]
@@ -58,6 +59,9 @@ ed25519_didkey = "nest_adapters.identity_didkey:Ed25519DidKeyIdentity"
 [project.entry-points."nest.plugins.trust"]
 agent_receipts = "nest_adapters.trust_receipts:AgentReceiptsTrust"
 
+[project.entry-points."nest.plugins.registry"]
+sm_bridge_facts = "nest_adapters.registry_smbridge:SmBridgeRegistry"
+
 [dependency-groups]
 dev = [
     "ruff>=0.15",
@@ -69,6 +73,9 @@ dev = [
     "pyyaml>=6.0",
     "nest-plugins-reference>=0.1.1",
 ]
+
+[tool.hatch.metadata]
+allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/nest_adapters"]
@@ -88,6 +95,9 @@ select = ["E", "F", "I", "UP", "B", "SIM", "C4", "RUF"]
 python_version = "3.11"
 strict = true
 files = ["src"]
+# sm-bridge ships pydantic models (SmAgentFacts etc.); the plugin teaches mypy
+# that their optional fields have defaults and need not be passed.
+plugins = ["pydantic.mypy"]
 
 [tool.pyright]
 include = ["src", "tests"]
