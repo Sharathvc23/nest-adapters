@@ -39,7 +39,9 @@ def register_scenarios() -> None:
     from nest_adapters.scenarios_builtin.reputation_receipts import (
         reputation_receipts_factory,
     )
+    from nest_adapters.scenarios_builtin.sm_marketplace import sm_marketplace_factory
 
+    register_scenario("sm_marketplace", sm_marketplace_factory)
     register_scenario("datafacts_provenance", datafacts_provenance_factory)
     register_scenario("registry_discovery", registry_discovery_factory)
     register_scenario("identity_rotation", identity_rotation_factory)
