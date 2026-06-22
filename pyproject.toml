@@ -62,6 +62,9 @@ agent_receipts = "nest_adapters.trust_receipts:AgentReceiptsTrust"
 [project.entry-points."nest.plugins.registry"]
 sm_bridge_facts = "nest_adapters.registry_smbridge:SmBridgeRegistry"
 
+[project.entry-points."nest.plugins.datafacts"]
+arp_receipts = "nest_adapters.datafacts_arp:ArpDataFacts"
+
 [dependency-groups]
 dev = [
     "ruff>=0.15",
