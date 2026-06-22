@@ -5,10 +5,95 @@
 [![Python 3.12+](https://img.shields.io/badge/Python-3.12%2B-blue.svg)](https://www.python.org/downloads/)
 [![Status: Alpha](https://img.shields.io/badge/Status-Alpha-orange.svg)]()
 
-NANDA protocol adapters for [Nanda Town](https://github.com/projnanda/nandatown)
-(NEST). Each adapter implements one of Nanda Town's 12 layer `Protocol`
-interfaces and is discovered by `nest run` via the `nest.plugins.<layer>`
-entry points — no fork of `nest-core` required.
+**Drop a real accountability stack into [Nanda Town](https://github.com/projnanda/nandatown) (NEST).**
+
+Nanda Town simulates agent networks over **12 swappable protocol layers**, each
+shipping with a deliberately simple reference plugin (textbook RSA identity, a
+shared-secret JWT, a self-asserted-feedback trust score, a bare in-memory
+registry…). `nest-adapters` replaces five of those defaults with
+**cryptographically-backed** implementations on the `sm-*` stack — real Ed25519
+identity, signature-based auth, receipt-backed reputation, NANDA-AgentFacts
+discovery, and signed data provenance — so a `nest run` exercises the *actual*
+NANDA accountability model, not a toy.
+
+Each adapter implements one layer's `Protocol` and is discovered by `nest run`
+through `nest.plugins.<layer>` entry points — **no fork of `nest-core`**. Point
+any scenario at one by name in its YAML `layers:` block.
+
+## Features
+
+Five layers, each swapping a reference default for the real thing:
+
+### 🔑 Identity — real Ed25519, with key rotation
+`ed25519_didkey` replaces the reference's toy `sim-rsa-sha256` with real Ed25519
+`did:key` identities (backed by `sm-arp`). `ed25519_rotating` adds **key rotation
+with continuity**: a new key is signed by the one it replaces, and verification
+is *as-of* a point in logical time — so a now-rotated key's old signature still
+verifies when audited inside its window, but **post-rotation forgery** and
+**backdating** are rejected. (A bundled validator passes against this plugin and
+fails against the default.)
+
+### 🔐 Auth — `did_key` tokens, no shared secret
+The reference `jwt` plugin signs every token with **one shared HMAC secret** —
+whoever holds it can mint a token for any agent. `did_key` instead signs each
+token with the **subject's own Ed25519 key** and verifies it against the
+subject's **did:key**. A token can't be forged for an agent whose key you don't
+hold, can't be relabelled as someone else's, and verifies **offline across
+parties** (no issuer to call). Tamper, impersonation, revocation, and expiry are
+all rejected.
+
+### ⭐ Trust — reputation from cross-signed receipts
+The reference `score_average` is a running mean of self-asserted feedback —
+trivially gamed by wash-trading. `agent_receipts` derives reputation from
+**cross-signed ARP receipts** (`sm-arp` VRP `nanda-rep/0.2`): a score only counts
+verified, *corroborated* receipts, and runs global **collusion-ring severance**,
+so a clique that mutually inflates its own scores collapses to zero while honest
+agents keep theirs.
+
+### 🧭 Registry — discovery as canonical NANDA AgentFacts
+The reference `in_memory` registry stores a bare `AgentCard`. `sm_bridge_facts`
+(backed by `sm-bridge`) projects every registered agent to a **canonical NANDA
+`SmAgentFacts`** whose `id` is the agent's **did:key** — the same identity the
+Identity layer derives. Registration is a conformance gate (a card that isn't
+NANDA-expressible is rejected), and discovery speaks the real NANDA AgentFacts
+format an Orrery agent serves at `/agentfacts.json`.
+
+### 📄 Data Facts — signed provenance + an integrity gate
+The reference `datafacts_v1` is a trust-me dict that grants access
+unconditionally. `arp_receipts` (backed by `sm-arp`) binds every dataset to a
+signed `data_shared` receipt by its **owner's did:key**; `fetch` is an
+**integrity gate** that returns metadata only if the provenance verifies *and*
+the content hash still matches — a tampered entry raises. Access grants are
+signed `authority_granted` receipts (auditable), and "freshness" means "the
+provenance still verifies," not a wall-clock guess.
+
+## Scenarios
+
+Runnable end-to-end with `python -m nest_adapters.run scenarios/<name>.yaml`
+(or `nest run` once installed). Each is deterministic from its seed.
+
+| Scenario | Demonstrates |
+|---|---|
+| `identity_rotation` | Key rotation + as-of verification; post-rotation forgery & backdating rejected. |
+| `reputation_receipts` | Wash-trading collusion ring (4/4) caught by `agent_receipts` where `score_average` misses it (0/4). |
+| `registry_discovery` | Agents register + discover peers as canonical NANDA AgentFacts. |
+| `datafacts_provenance` | Datasets published with signed provenance; peers fetch through the integrity gate. |
+| `auth_handshake` | Agents present did:key-signed tokens; peers verify by did:key and grant. |
+| **`sm_marketplace`** | **All four accountability layers together** — sellers register + publish, buyers discover, integrity-fetch, and credit seller reputation. A discovered, verified, credited seller reaches reputation 0.865; a stranger stays at the 0.5 neutral prior. |
+
+## Layer coverage
+
+Of Nanda Town's 12 layers, `nest-adapters` covers **5** today:
+
+| Layer | nest-adapters plugin | Backed by |
+|---|---|---|
+| Identity | `ed25519_rotating`, `ed25519_didkey` | Ed25519 / did:key |
+| Auth | `did_key` | Ed25519 signatures (no shared secret) |
+| Trust | `agent_receipts` | `sm-arp` (VRP) |
+| Registry | `sm_bridge_facts` | `sm-bridge` |
+| Data Facts | `arp_receipts` | `sm-arp` |
+| Transport · Comms · Coordination · Negotiation · Memory · Privacy | — | Pending |
+| **Payments** | — | **Pending** |
 
 ## Install
 
@@ -16,112 +101,61 @@ entry points — no fork of `nest-core` required.
 pip install nest-core nest-adapters
 ```
 
-Installing this package registers its plugins; point any scenario at them by
-name in the YAML `layers:` block.
+Installing this package registers its plugins; reference them by name in a
+scenario's YAML `layers:` block (e.g. `auth: did_key`). For local development:
 
-## Adapters
+```bash
+git clone https://github.com/Sharathvc23/nest-adapters && cd nest-adapters
+uv sync --extra scenarios
+uv run python -m nest_adapters.run scenarios/sm_marketplace.yaml
+```
 
-| Layer | Plugin name | Class | Solves |
-|---|---|---|---|
-| identity | `ed25519_rotating` | `Ed25519RotatingIdentity` | Problem 5 — real Ed25519 identity with key rotation and historical (as-of) signature verification. |
-| identity | `ed25519_didkey` | `Ed25519DidKeyIdentity` | Real Ed25519 `did:key` baseline (replaces the toy `sim-rsa-sha256` reference), backed by `sm-arp`. |
-| trust | `agent_receipts` | `AgentReceiptsTrust` | Reputation from cross-signed ARP receipts (VRP `nanda-rep/0.2`): corroboration + collusion severing, backed by `sm-arp`. |
+## How the adapters work — details
 
-More adapters (auth delegation, content-addressed datafacts, versioned comms,
-gossip registry) are planned; see `docs/conformance.md`.
+### Identity: determinism + did:key
 
-## Identity: `ed25519_rotating`
-
-Real Ed25519 signing (via [`cryptography`](https://cryptography.io)), did:key
-identities, and **key rotation with continuity**: a new key is signed by the
-key it replaces, and every signature carries the `key_id` and signing tick that
-produced it. Verification is *as-of* a point in logical time, so a signature
-made by a now-rotated key still verifies when audited within that key's
-validity window — but is rejected for observations after rotation.
-
-This defeats two attacks the default `did_key` plugin cannot express:
-
-- **Post-rotation forgery** — an attacker who compromised an old key signs a
-  message observed *after* rotation. Rejected: the audit `as_of` time falls
-  outside the old key's window.
-- **Backdating** — an attacker stamps a new-key signature with a tick inside
-  the old key's window. Rejected: the claimed signing tick falls outside the
-  new key's window.
+All key material derives from `H(seed ‖ agent_id ‖ rotation_count)` via
+`Ed25519PrivateKey.from_private_bytes` — never `generate()` — and rotation time
+comes from the simulator's logical clock, so the same seed yields a byte-identical
+trace. did:key values are `did:key:z<base58btc(0xed01 ‖ pubkey32)>`,
+byte-compatible with the `sm-arp` encoding the other layers key on.
 
 ```python
 from nest_adapters.identity import Ed25519RotatingIdentity
 from nest_core.types import AgentId
 
 ident = Ed25519RotatingIdentity(AgentId("a1"), seed=b"scenario-seed")
-sig = ident.sign(b"hello")                       # signed by key v1 at tick 0
-ident.advance_to(10.0)
-ident.rotate_key()                               # v2, signed-over by v1 (continuity)
-assert ident.verify_as_of(b"hello", sig, AgentId("a1"), as_of=0.0)   # within v1 window
-assert not ident.verify_as_of(b"hello", sig, AgentId("a1"), as_of=20.0)  # post-rotation
+sig = ident.sign(b"hello")                                   # key v1, tick 0
+ident.advance_to(10.0); ident.rotate_key()                   # v2, signed-over by v1
+assert ident.verify_as_of(b"hello", sig, AgentId("a1"), as_of=0.0)        # in v1 window
+assert not ident.verify_as_of(b"hello", sig, AgentId("a1"), as_of=20.0)   # post-rotation
 ```
 
-### Determinism
+### Auth: did:key tokens
 
-All key material derives from `H(seed ‖ agent_id ‖ rotation_count)` via
-`Ed25519PrivateKey.from_private_bytes` — never `generate()`. Rotation time
-comes from the simulator's logical clock, never the wall clock. Same seed →
-byte-identical trace, which is what Nanda Town's seed-bank check enforces.
-
-### did:key format
-
-did:key values are `did:key:z<base58btc(0xed01 ‖ pubkey32)>`, byte-compatible
-with the `sm-arp` / chapter-protocol did:key encoding.
-
-## Identity: `ed25519_didkey`
-
-The non-rotating real-crypto baseline. NEST's reference `did_key` plugin is a
-toy (`sim-rsa-sha256`, textbook RSA); its own docstring says to "swap to a
-proper Ed25519 implementation." This is that swap, backed by `sm-arp`.
-
-Each agent's keypair derives deterministically from its `AgentId`
-(`Identity.from_seed(sha256(str(agent_id))[:32])`), and Ed25519 (RFC 8032) is
-itself deterministic, so traces replay byte-for-byte. Signatures use
-`algorithm="ed25519"` and carry the raw 64-byte Ed25519 signature (no envelope).
-`did_of(agent)` exposes the `did:key`, which is byte-identical to the receipt
-`principal_did` the trust plugin keys on.
+A token is `payload|sig`, where the payload pins `sub`, the subject's `did`, and
+`scopes`, and `sig` is the subject's Ed25519 signature over it. `verify` recovers
+the public key with `pubkey_from_did`, checks the signature, and requires the
+embedded `did` to equal `did_for(sub)` — so neither tampering nor relabelling
+survives.
 
 ```python
-from nest_adapters.identity_didkey import Ed25519DidKeyIdentity
+from nest_adapters.auth_didkey import DidAuth
 from nest_core.types import AgentId
 
-ident = Ed25519DidKeyIdentity(AgentId("a1"))
-sig = ident.sign(b"hello")                       # algorithm="ed25519", 64-byte raw sig
-assert ident.verify(b"hello", sig, AgentId("a1"))
-did = ident.did_of(AgentId("a1"))                # did:key:z6Mk...
+auth = DidAuth()
+token = await auth.issue(AgentId("a1"), ["read"])
+ctx = await DidAuth().verify(token)        # verifies on a *fresh* instance — no shared secret
+assert ctx.subject == AgentId("a1")
 ```
 
-## Trust: `agent_receipts`
+### Trust: scoring + normalization
 
-Reputation from **cross-signed ARP receipts** instead of self-asserted feedback.
-A report carries an ARP receipt as JSON in `Evidence.detail`; the plugin
-verifies it (`sm_arp.receipts.verify_receipt`) and, if valid, appends it to an
-in-memory ledger. `score(agent)` gathers that agent's receipts (matched on
-`principal_did`) and runs `sm_arp.vrp.reputation_score_v2` (corroboration-gated,
-collusion-severing) with `corroboration_rate` as confidence.
-
-`reputation_score_v2` is **unbounded** (it sums category weights), so the raw
-score is normalized to `[0, 1]` for `ReputationScore.score` via a saturating map
-`1 - exp(-raw / K)` with **`K = 10`** (`NORMALIZATION_K`). At `K = 10` a single
-corroborated `purchase` receipt (raw = 5.0) maps to ≈ 0.39 — safely above the
-marketplace gate's 0.2 threshold — while the curve stays unsaturated for small
-ledgers (raw = 10 → 0.63, raw = 30 → 0.95).
-
-Stock scenarios pass a plain-string `detail` (no receipt); those fall back to
-the reference score-average heuristic (positive → 1.0, negative/byzantine →
-0.0), so the plugin is a drop-in replacement. The constructor is no-arg-callable
-(the runner does `trust_cls()`); the plugin mints its own deterministic Ed25519
-identity for attestations. `stake` is a parity-only no-op (`sm-arp` has no
-staking primitive).
-
-> Known boundary: per-agent `score()` reflects that agent's *own* corroborated
-> receipts. Collusion-ring severing is a property of the *global* corroboration
-> graph and is exercised at the library level (`reputation_score_v2` over a full
-> ledger) — see the `reputation_receipts` benchmark follow-up.
+`reputation_score_v2` is unbounded (it sums category weights), so the raw score
+is mapped to `[0, 1]` via `1 - exp(-raw / K)` with `K = 10`: a single corroborated
+`purchase` receipt (raw = 5.0) → ≈ 0.39, raw = 10 → 0.63, raw = 30 → 0.95.
+Stock scenarios that pass a plain-string `Evidence.detail` fall back to the
+reference score-average heuristic, so the plugin is a drop-in replacement.
 
 ```python
 import json
@@ -132,22 +166,31 @@ trust = AgentReceiptsTrust()
 await trust.report(AgentId("a1"), Evidence(
     reporter=AgentId("a2"), subject=AgentId("a1"),
     kind="receipt", detail=json.dumps(cross_signed_receipt)))
-rep = await trust.score(AgentId("a1"))           # corroborated, normalized to [0, 1]
+rep = await trust.score(AgentId("a1"))     # corroborated, severance-resistant, normalized
 ```
 
-## Validators
+### Registry & Data Facts: canonical NANDA shapes
 
-`nest_adapters.validators.validate_identity_rotation(trace_path)` reads a
-JSONL trace and fails if any signed message used a key outside its validity
-window or backdated its signing tick. It **passes** against this plugin and
-**fails** against the default `did_key` plugin (which has no key-window
-concept) — the two-direction check that defines the problem's pass condition.
+`SmBridgeRegistry.index()` returns every agent as `SmAgentFacts` (the in-process
+analogue of `/sm-bridge/index`); `ArpDataFacts.provenance(url)` returns the signed
+`data_shared` receipt committing a dataset's content hash.
+
+### Validators
+
+`validate_identity_rotation(trace_path)` reads a JSONL trace and fails if any
+signed message used a key outside its validity window or backdated its signing
+tick — passing against `ed25519_rotating`, failing against the default.
 
 ## Develop
 
 ```bash
-make ci-local   # uv sync, ruff check, ruff format --check, pyright (strict), pytest
+uv sync --extra scenarios
+uv run ruff check . && uv run ruff format --check src tests
+uv run mypy && uv run pyright          # both strict
+uv run pytest -q
 ```
+
+CI runs the same gate on every push (`.github/workflows/ci.yml`).
 
 ---
 
